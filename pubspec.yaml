@@ -1,0 +1,12 @@
+name: minio_client_dart
+version: 1.0.0
+description: The dart client of minio cms
+publish_to: none
+dependencies:
+  socket_io_client: ^2.0.0-beta.4-nullsafety.0
+  openapi:
+    path: './../Minio.Spec/Minio.ApiGatewayDart'
+dev_dependencies:
+  test: ^1.3.0
+environment:
+  sdk: '>=2.0.0 <3.0.0'
