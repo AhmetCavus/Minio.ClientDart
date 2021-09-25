@@ -32,7 +32,8 @@ class MinioClient {
     }
 
     static MinioClient init(String baseUrl) {
-      return MinioClient(AuthService(AuthenticateApi()), CollectionService(CollectionApi()), ChannelService(ChannelApi()), SocketServiceFactory(baseUrl));
+      final apiClient = ApiClient(basePath: baseUrl);
+      return MinioClient(AuthService(AuthenticateApi(apiClient)), CollectionService(CollectionApi(apiClient)), ChannelService(ChannelApi(apiClient)), SocketServiceFactory(baseUrl));
     }
 
     Future<ConnectionResult<String>> createAccount(String email, String name, String secretId) async {
