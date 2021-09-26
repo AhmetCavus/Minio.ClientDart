@@ -5,7 +5,8 @@ publish_to: none
 dependencies:
   socket_io_client: ^2.0.0-beta.4-nullsafety.0
   openapi:
-    path: './../Minio.Spec/Minio.ApiGatewayDart'
+    git: 
+      url: 'https://github.com/AhmetCavus/Minio.ApiGatewayDart.git'
 dev_dependencies:
   test: ^1.3.0
 environment:

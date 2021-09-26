@@ -8,9 +8,11 @@ class SocketService {
 
   String _token;
   IO.Socket _socket;
+  String _namespace;
   final String _baseUrl;
 
-  bool get isConnected => _socket.connected;
+  String get namespace => _namespace;
+  bool get isConnected => _socket == null ? false : _socket.connected;
 
   SocketService(this._baseUrl);
 
@@ -24,8 +26,10 @@ class SocketService {
     if(_socket != null) {
       _socket.dispose();
     }
+    _namespace = namespace;
     final completer = Completer<ConnectionResult>();
-    _socket = IO.io("$_baseUrl/$namespace", IO.OptionBuilder()
+    final approvedNamespace = namespace.isNotEmpty ? "/${namespace}" : "";
+    _socket = IO.io("$_baseUrl$approvedNamespace", IO.OptionBuilder()
       .setQuery({"token": _token })
       .setTransports(List.of(["websocket"]))
       .build());

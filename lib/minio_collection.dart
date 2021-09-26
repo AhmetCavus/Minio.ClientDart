@@ -13,37 +13,39 @@ class MinioCollection<E extends ConvertableItem> {
 
   bool get isSynchronised => _socketService.isConnected; 
 
-  MinioCollection(this._items, this._collectionService, this._socketService, this._creator) {
-    _init();
-  }
-
-  void _init() {
-    _socketService.connect(E.toString().toLowerCase());
-
-    _socketService.subscribeOnConnected((data) {
-      print("Socket connected...");
-    });
-
-    _socketService.subscribeOnDisconnected((data) {
-      print("Socket disconnected...");
-    });
-  }
+  MinioCollection(this._items, this._collectionService, this._socketService, this._creator);
 
   E operator [] (int index) {
     return _items[index];
   }
 
-  Future<void> add(E value) async {
+  Future<E> add(E value) async {
     final result = await _collectionService.addItemToCollection(value, _creator);
     if(result.isValid()) {
       _items.add(result);
+      return result;
+    } else {
+      throw Exception("Invalid result");
+    }
+  }
+
+  Future<bool> removeFromId(String id) async {
+    final result = await _collectionService.removeItemFromCollection(id, _creator);
+    if(result.isValid()) {
+      _items.removeWhere((item) => item.id == id);
+      return true;
     } else {
       throw Exception("Invalid result");
     }
   }
 
   Future<bool> remove(Object value) async {
-    return _items.remove(value);
+    final result = await _collectionService.removeItemFromCollection(value, _creator);
+    if(result.isValid()) {
+      return _items.remove(value);
+    } else {
+      throw Exception("Invalid result");
+    }
   }
 
   bool any(bool Function(E element) test) {
@@ -51,133 +53,112 @@ class MinioCollection<E extends ConvertableItem> {
   }
 
   Iterable<R> cast<R>() {
-    // TODO: implement cast
-    throw UnimplementedError();
+    return _items.cast<R>();
   }
 
   bool contains(Object element) {
-    // TODO: implement contains
-    throw UnimplementedError();
+    return _items.contains(element);
   }
 
   E elementAt(int index) {
-    // TODO: implement elementAt
-    throw UnimplementedError();
+    return _items.elementAt(index);
   }
 
   bool every(bool Function(E element) test) {
-    // TODO: implement every
-    throw UnimplementedError();
+    _items.every(test);
   }
 
   Iterable<T> expand<T>(Iterable<T> Function(E element) toElements) {
-    // TODO: implement expand
-    throw UnimplementedError();
+    return _items.expand(toElements);
   }
 
   // TODO: implement first
-  E get first => throw UnimplementedError();
+  E get first => _items.first;
 
   E firstWhere(bool Function(E element) test, {E Function() orElse}) {
-    // TODO: implement firstWhere
-    throw UnimplementedError();
+    return _items.firstWhere(test, orElse: orElse);
   }
 
   T fold<T>(T initialValue, T Function(T previousValue, E element) combine) {
-    // TODO: implement fold
-    throw UnimplementedError();
+    return _items.fold(initialValue, combine);
   }
 
   Iterable<E> followedBy(Iterable<E> other) {
-    // TODO: implement followedBy
-    throw UnimplementedError();
+    return _items.followedBy(other);
   }
 
   void forEach(void Function(E element) action) {
-    // TODO: implement forEach
+    _items.forEach(action);
   }
 
   // TODO: implement isEmpty
-  bool get isEmpty => throw UnimplementedError();
+  bool get isEmpty => _items.isEmpty;
 
   // TODO: implement isNotEmpty
-  bool get isNotEmpty => throw UnimplementedError();
+  bool get isNotEmpty => _items.isNotEmpty;
 
   // TODO: implement iterator
-  Iterator<E> get iterator => throw UnimplementedError();
+  Iterator<E> get iterator => _items.iterator;
 
   String join([String separator = ""]) {
-    // TODO: implement join
-    throw UnimplementedError();
+    return _items.join(separator);
   }
 
   // TODO: implement last
-  E get last => throw UnimplementedError();
+  E get last => _items.last;
 
   E lastWhere(bool Function(E element) test, {E Function() orElse}) {
-    // TODO: implement lastWhere
-    throw UnimplementedError();
+    return _items.lastWhere(test, orElse: orElse);
   }
 
   // TODO: implement length
-  int get length => throw UnimplementedError();
+  int get length => _items.length;
 
   Iterable<T> map<T>(T Function(E e) toElement) {
-    // TODO: implement map
-    throw UnimplementedError();
+    return _items.map(toElement);
   }
 
   E reduce(E Function(E value, E element) combine) {
-    // TODO: implement reduce
-    throw UnimplementedError();
+    return _items.reduce(combine);
   }
 
   // TODO: implement single
-  E get single => throw UnimplementedError();
+  E get single => _items.single;
 
   E singleWhere(bool Function(E element) test, {E Function() orElse}) {
-    // TODO: implement singleWhere
-    throw UnimplementedError();
+    return _items.singleWhere(test, orElse: orElse);
   }
 
   Iterable<E> skip(int count) {
-    // TODO: implement skip
-    throw UnimplementedError();
+    return _items.skip(count);
   }
 
   Iterable<E> skipWhile(bool Function(E value) test) {
-    // TODO: implement skipWhile
-    throw UnimplementedError();
+    return _items.skipWhile(test);
   }
 
   Iterable<E> take(int count) {
-    // TODO: implement take
-    throw UnimplementedError();
+    return _items.take(count);
   }
 
   Iterable<E> takeWhile(bool Function(E value) test) {
-    // TODO: implement takeWhile
-    throw UnimplementedError();
+    return _items.takeWhile(test);
   }
 
   List<E> toList({bool growable = true}) {
-    // TODO: implement toList
-    throw UnimplementedError();
+    return _items.toList(growable: growable);
   }
 
   Set<E> toSet() {
-    // TODO: implement toSet
-    throw UnimplementedError();
+    return _items.toSet();
   }
 
   Iterable<E> where(bool Function(E element) test) {
-    // TODO: implement where
-    throw UnimplementedError();
+    return _items.where(test);
   }
 
   Iterable<T> whereType<T>() {
-    // TODO: implement whereType
-    throw UnimplementedError();
+    return _items.whereType<T>();
   }
 
   void subscribeOnSynchronisationLost(Function callback) {
