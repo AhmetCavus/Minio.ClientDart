@@ -5,23 +5,35 @@ import 'package:minio_client_dart/convertable_Item.dart';
 import 'package:minio_client_dart/socket_service.dart';
 
 class MinioCollection<E extends ConvertableItem> {
-
   final List<E> _items;
   final ItemCreator<E> _creator;
   final SocketService _socketService;
   final CollectionService _collectionService;
 
-  bool get isSynchronised => _socketService.isConnected; 
+  bool get isSynchronised => _socketService.isConnected;
 
-  MinioCollection(this._items, this._collectionService, this._socketService, this._creator);
+  MinioCollection(
+      this._items, this._collectionService, this._socketService, this._creator);
 
-  E operator [] (int index) {
+  E operator [](int index) {
     return _items[index];
   }
 
   Future<E> add(E value) async {
-    final result = await _collectionService.addItemToCollection(value, _creator);
-    if(result.isValid()) {
+    final result =
+        await _collectionService.addItemToCollection(value, _creator);
+    if (result.isValid()) {
+      _items.add(result);
+      return result;
+    } else {
+      throw Exception("Invalid result");
+    }
+  }
+
+  Future<E> update(E value) async {
+    final result = await _collectionService.updateItemFromCollection(
+        value, value.id, _creator);
+    if (result.isValid()) {
       _items.add(result);
       return result;
     } else {
@@ -30,8 +42,9 @@ class MinioCollection<E extends ConvertableItem> {
   }
 
   Future<bool> removeFromId(String id) async {
-    final result = await _collectionService.removeItemFromCollection(id, _creator);
-    if(result.isValid()) {
+    final result =
+        await _collectionService.removeItemFromCollection(id, _creator);
+    if (result.isValid()) {
       _items.removeWhere((item) => item.id == id);
       return true;
     } else {
@@ -40,8 +53,9 @@ class MinioCollection<E extends ConvertableItem> {
   }
 
   Future<bool> remove(Object value) async {
-    final result = await _collectionService.removeItemFromCollection(value, _creator);
-    if(result.isValid()) {
+    final result =
+        await _collectionService.removeItemFromCollection(value, _creator);
+    if (result.isValid()) {
       return _items.remove(value);
     } else {
       throw Exception("Invalid result");
@@ -168,5 +182,4 @@ class MinioCollection<E extends ConvertableItem> {
   void subscribeOnSynchronisationEstablished(Function callback) {
     _socketService.subscribeOnConnected(callback);
   }
-
 }
