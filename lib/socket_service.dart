@@ -5,7 +5,6 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'connection_result.dart';
 
 class SocketService {
-
   String _token;
   IO.Socket _socket;
   String _namespace;
@@ -17,22 +16,26 @@ class SocketService {
   SocketService(this._baseUrl);
 
   void updateAuthToken(String token) {
-    if(token.isEmpty) throw Exception("Invalid token: The token is not valid");
+    if (token.isEmpty) throw Exception("Invalid token: The token is not valid");
     _token = token;
   }
 
   Future<ConnectionResult> connect(String namespace) async {
-    if(_token.isEmpty) throw Exception("Invalid token: Before connecting attempt, you've to set the token");
-    if(_socket != null) {
+    if (_token.isEmpty)
+      throw Exception(
+          "Invalid token: Before connecting attempt, you've to set the token");
+    if (_socket != null) {
       _socket.dispose();
     }
     _namespace = namespace;
     final completer = Completer<ConnectionResult>();
     final approvedNamespace = namespace.isNotEmpty ? "/${namespace}" : "";
-    _socket = IO.io("$_baseUrl$approvedNamespace", IO.OptionBuilder()
-      .setQuery({"token": _token })
-      .setTransports(List.of(["websocket"]))
-      .build());
+    _socket = IO.io(
+        "$_baseUrl$approvedNamespace",
+        IO.OptionBuilder()
+            .setQuery({"token": _token})
+            .setTransports(List.of(["websocket"]))
+            .build());
     _socket.onConnect((data) {
       completer.complete(ConnectionResult(true, data: data));
     });
@@ -79,8 +82,7 @@ class SocketService {
   }
 
   void dispose() {
-    if(_socket == null) return;
+    if (_socket == null) return;
     _socket.dispose();
   }
-
 }

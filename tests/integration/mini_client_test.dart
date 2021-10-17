@@ -42,48 +42,49 @@ void main() async {
 
     group("collection", () {
       test("get collection", () async {
-        todos = await minioClient
-            .requestCollection<Todo>((decoded) => Todo(decoded));
+        todos = await minioClient.requestCollection<Todo>(
+            (decoded) => Todo(decoded),
+            relations: "category");
         categories = await minioClient
             .requestCollection<Category>((decoded) => Category(decoded));
         expect(todos, isNotNull);
       });
 
-      var random = Random();
-      var id = "id${random.nextInt(1000)}";
-      var newTodo = Todo.Init(
-          id,
-          "name${random.nextInt(1000)}",
-          "description${random.nextInt(1000)}",
-          DateTime.now(),
-          false,
-          Category.Init("id", "name", "description", "image"));
+      // var random = Random();
+      // var id = "id${random.nextInt(1000)}";
+      // var newTodo = Todo.Init(
+      //     id,
+      //     "name${random.nextInt(1000)}",
+      //     "description${random.nextInt(1000)}",
+      //     DateTime.now(),
+      //     false,
+      //     Category.Init("id", "name", "description", "image"));
 
-      var newCategory = Category.Init(id, "name${random.nextInt(1000)}",
-          "description${random.nextInt(1000)}", "https://picsum.photos/300");
-      Category addCategoryResult;
-      Todo addTodoResult;
-      Todo updatedTodoResult;
+      // var newCategory = Category.Init(id, "name${random.nextInt(1000)}",
+      //     "description${random.nextInt(1000)}", "https://picsum.photos/300");
+      // Category addCategoryResult;
+      // Todo addTodoResult;
+      // Todo updatedTodoResult;
 
-      test("post item to collection", () async {
-        addTodoResult = await todos.add(newTodo);
-        expect(addTodoResult, isNotNull);
-      });
-      test("post item to collection", () async {
-        addCategoryResult = await categories.add(newCategory);
-        expect(addTodoResult, isNotNull);
-      });
-      test("update item from collection", () async {
-        final toUpdate = Todo.Init(
-            addTodoResult.id,
-            "addTodoResult.title updated",
-            "addTodoResult.description updated",
-            DateTime.now(),
-            true,
-            addCategoryResult);
-        updatedTodoResult = await todos.update(toUpdate);
-        expect(updatedTodoResult, isNotNull);
-      });
+      // test("post item to collection", () async {
+      //   addTodoResult = await todos.add(newTodo);
+      //   expect(addTodoResult, isNotNull);
+      // });
+      // test("post item to collection", () async {
+      //   addCategoryResult = await categories.add(newCategory);
+      //   expect(addTodoResult, isNotNull);
+      // });
+      // test("update item from collection", () async {
+      //   final toUpdate = Todo.Init(
+      //       addTodoResult.id,
+      //       "addTodoResult.title updated",
+      //       "addTodoResult.description updated",
+      //       DateTime.now(),
+      //       true,
+      //       addCategoryResult);
+      //   updatedTodoResult = await todos.update(toUpdate);
+      //   expect(updatedTodoResult, isNotNull);
+      // });
       // test("remove item from collection", () async {
       //   await todos.removeFromId(addTodoResult.id);
       // });

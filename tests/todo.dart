@@ -18,7 +18,7 @@ class Todo extends ConvertableItem {
             ? DateTime.tryParse(json["creationDate"])
             : DateTime.fromMicrosecondsSinceEpoch(0),
         isDone = json["isDone"],
-        category = Category(json);
+        category = Category(json["category"]);
 
   Todo.Init(this.id, this.title, this.description, this.creationDate,
       this.isDone, this.category);
