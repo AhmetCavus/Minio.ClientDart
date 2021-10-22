@@ -42,9 +42,8 @@ void main() async {
 
     group("collection", () {
       test("get collection", () async {
-        todos = await minioClient.requestCollection<Todo>(
-            (decoded) => Todo(decoded),
-            relations: "category");
+        todos = await minioClient
+            .requestCollection<Todo>((decoded) => Todo(decoded));
         categories = await minioClient
             .requestCollection<Category>((decoded) => Category(decoded));
         expect(todos, isNotNull);

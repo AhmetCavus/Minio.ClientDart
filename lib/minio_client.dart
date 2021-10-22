@@ -77,12 +77,10 @@ class MinioClient {
   }
 
   Future<MinioCollection<E>> requestCollection<E extends ConvertableItem>(
-      ItemCreator<E> creator,
-      {String relations = ""}) async {
+      ItemCreator<E> creator) async {
     if (!isAuthenticated)
       throw Exception("Not initialized. Ensure authentication first.");
-    var collection = await _collectionService.requestCollection<E>(creator,
-        relations: relations);
+    var collection = await _collectionService.requestCollection<E>(creator);
     return MinioCollection<E>(
         collection, _collectionService, _sockets.first, creator);
   }

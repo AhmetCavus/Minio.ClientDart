@@ -17,12 +17,10 @@ class CollectionService {
   }
 
   Future<List<E>> requestCollection<E extends ConvertableItem>(
-      ItemCreator<E> creator,
-      {String relations = ""}) async {
+      ItemCreator<E> creator) async {
     _setAuthentication();
-    var response =
-        await _collectionApi.collectionSchemaRelationsGetWithHttpInfo(
-            E.toString().toLowerCase(), relations);
+    var response = await _collectionApi
+        .collectionSchemaPopulatedGetWithHttpInfo(E.toString().toLowerCase());
     var decoded = jsonDecode(response.body);
     var mappedCollection = decoded.map((item) {
       return creator(item);
