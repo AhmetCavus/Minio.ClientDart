@@ -17,10 +17,12 @@ class CollectionService {
   }
 
   Future<List<E>> requestCollection<E extends ConvertableItem>(
-      ItemCreator<E> creator) async {
+      ItemCreator<E> creator,
+      {String schema = ""}) async {
     _setAuthentication();
-    var response = await _collectionApi
-        .collectionSchemaPopulatedGetWithHttpInfo(E.toString().toLowerCase());
+    var response =
+        await _collectionApi.collectionSchemaPopulatedGetWithHttpInfo(
+            schema.isEmpty ? E.toString().toLowerCase() : schema);
     var decoded = jsonDecode(response.body);
     var mappedCollection = decoded.map((item) {
       return creator(item);
@@ -29,31 +31,34 @@ class CollectionService {
     return collection;
   }
 
-  Future<T> addItemToCollection<T extends ConvertableItem>(
-      T body, ItemCreator<T> creator) async {
+  Future<E> addItemToCollection<E extends ConvertableItem>(
+      E body, ItemCreator<E> creator,
+      {String schema = ""}) async {
     _setAuthentication();
     var result = await _collectionApi.collectionSchemaPostWithHttpInfo(
-        T.toString().toLowerCase(),
+        schema.isEmpty ? E.toString().toLowerCase() : schema,
         body: body);
     var decoded = jsonDecode(result.body);
     return creator(decoded);
   }
 
-  Future<T> updateItemFromCollection<T extends ConvertableItem>(
-      T body, String id, ItemCreator<T> creator) async {
+  Future<E> updateItemFromCollection<E extends ConvertableItem>(
+      E body, String id, ItemCreator<E> creator,
+      {String schema = ""}) async {
     _setAuthentication();
     var result = await _collectionApi.collectionSchemaIdPutWithHttpInfo(
-        T.toString().toLowerCase(), id,
+        schema.isEmpty ? E.toString().toLowerCase() : schema, id,
         body: body);
     var decoded = jsonDecode(result.body);
     return creator(decoded);
   }
 
-  Future<T> removeItemFromCollection<T extends ConvertableItem>(
-      String id, ItemCreator<T> creator) async {
+  Future<E> removeItemFromCollection<E extends ConvertableItem>(
+      String id, ItemCreator<E> creator,
+      {String schema = ""}) async {
     _setAuthentication();
     var result = await _collectionApi.collectionSchemaIdDeleteWithHttpInfo(
-        T.toString().toLowerCase(), id);
+        schema.isEmpty ? E.toString().toLowerCase() : schema, id);
     var decoded = jsonDecode(result.body);
     return creator(decoded);
   }

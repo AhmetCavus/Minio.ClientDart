@@ -42,12 +42,14 @@ void main() async {
 
     group("collection", () {
       test("get collection", () async {
-        todos = await minioClient
-            .requestCollection<Todo>((decoded) => Todo(decoded));
-        categories = await minioClient
-            .requestCollection<Category>((decoded) => Category(decoded));
+        todos = await minioClient.requestCollection<Todo>(
+            (decoded) => Todo(decoded),
+            schema: "todo");
+        categories = await minioClient.requestCollection<Category>(
+            (decoded) => Category(decoded),
+            schema: "category");
         expect(todos, isNotNull);
-      });
+      }, timeout: Timeout(Duration(seconds: 60)));
 
       // var random = Random();
       // var id = "id${random.nextInt(1000)}";

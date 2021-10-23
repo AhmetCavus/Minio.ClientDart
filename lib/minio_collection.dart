@@ -5,6 +5,7 @@ import 'package:minio_client_dart/convertable_Item.dart';
 import 'package:minio_client_dart/socket_service.dart';
 
 class MinioCollection<E extends ConvertableItem> {
+  final String _schema;
   final List<E> _items;
   final ItemCreator<E> _creator;
   final SocketService _socketService;
@@ -12,16 +13,16 @@ class MinioCollection<E extends ConvertableItem> {
 
   bool get isSynchronised => _socketService.isConnected;
 
-  MinioCollection(
-      this._items, this._collectionService, this._socketService, this._creator);
+  MinioCollection(this._schema, this._items, this._collectionService,
+      this._socketService, this._creator);
 
   E operator [](int index) {
     return _items[index];
   }
 
   Future<E> add(E value) async {
-    final result =
-        await _collectionService.addItemToCollection(value, _creator);
+    final result = await _collectionService.addItemToCollection(value, _creator,
+        schema: _schema);
     if (result.isValid()) {
       _items.add(result);
       return result;
@@ -31,8 +32,8 @@ class MinioCollection<E extends ConvertableItem> {
   }
 
   Future<E> update(E value) async {
-    final result = await _collectionService.updateItemFromCollection(
-        value, value.id, _creator);
+    final result = await _collectionService
+        .updateItemFromCollection(value, value.id, _creator, schema: _schema);
     if (result.isValid()) {
       _items.add(result);
       return result;
@@ -42,8 +43,8 @@ class MinioCollection<E extends ConvertableItem> {
   }
 
   Future<bool> removeFromId(String id) async {
-    final result =
-        await _collectionService.removeItemFromCollection(id, _creator);
+    final result = await _collectionService
+        .removeItemFromCollection(id, _creator, schema: _schema);
     if (result.isValid()) {
       _items.removeWhere((item) => item.id == id);
       return true;
@@ -53,8 +54,8 @@ class MinioCollection<E extends ConvertableItem> {
   }
 
   Future<bool> remove(Object value) async {
-    final result =
-        await _collectionService.removeItemFromCollection(value, _creator);
+    final result = await _collectionService
+        .removeItemFromCollection(value, _creator, schema: _schema);
     if (result.isValid()) {
       return _items.remove(value);
     } else {
